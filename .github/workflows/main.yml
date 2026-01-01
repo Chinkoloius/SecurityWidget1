@@ -1,0 +1,33 @@
+name: Build APK
+
+# تشغيل الـ workflow عند أي push على الفرع الرئيسي
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1️⃣ سحب ملفات المشروع من المستودع
+      - uses: actions/checkout@v3
+
+      # 2️⃣ إعداد JDK (Java 11)
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+
+      # 3️⃣ بناء APK بصيغة Debug
+      - name: Build APK
+        run: ./gradlew assembleDebug
+
+      # 4️⃣ رفع APK كـ Artifact لتحميله
+      - name: Upload APK
+        uses: actions/upload-artifact@v3
+        with:
+          name: SecurityWidget-debug.apk
+          path: app/build/outputs/apk/debug/app-debug.apk
+          
